@@ -761,17 +761,17 @@ uint8_t Sd2Card::sparkSPISend(uint8_t data) {
 	else {						// SPI Mode is Software so use bit bang method
 		for (uint8_t bit = 0; bit < 8; bit++)  {
 			if (data & (1 << (7-bit)))		// walks down mask from bit 7 to bit 0
-				PIN_MAP[mosiPin_].gpio_peripheral->BSRR = PIN_MAP[mosiPin_].gpio_pin; // Data High
+				pinHI(mosiPin_); // Data High
 			else
-				PIN_MAP[mosiPin_].gpio_peripheral->BRR = PIN_MAP[mosiPin_].gpio_pin; // Data Low
+				pinLO(mosiPin_);
 			
-			PIN_MAP[clockPin_].gpio_peripheral->BSRR = PIN_MAP[clockPin_].gpio_pin; // Clock High
+			pinHI(clockPin_);
 
 			b <<= 1;
 			if (PIN_MAP[misoPin_].gpio_peripheral->IDR & PIN_MAP[misoPin_].gpio_pin)
 				b |= 1;
 
-			PIN_MAP[clockPin_].gpio_peripheral->BRR = PIN_MAP[clockPin_].gpio_pin; // Clock Low
+			pinLO(clockPin_); // Clock Low
 		}
 	}
 	return b;
